@@ -1,13 +1,19 @@
 package com.security.jwt.config;
 
+import com.security.jwt.filter.MyFilter3;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.filter.CorsFilter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.filter.CorsFilter;
 
+/**
+ * Security filter 가 가장 먼저 실행되고
+ * 그 다음 spring filter 가 실행된다.
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -17,6 +23,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
+        http.addFilterBefore(new MyFilter3(), BasicAuthenticationFilter.class);
         http
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // session을 사용하지 않겠다 ! 왜? JWT를 사용할거니까
