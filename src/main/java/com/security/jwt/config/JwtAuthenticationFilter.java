@@ -1,5 +1,7 @@
 package com.security.jwt.config;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.security.jwt.auth.PrincipalDetails;
 import com.security.jwt.model.Member;
@@ -15,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
 
 //스프링 시큐리티에 UsernamePasswordAuthenticationFilter 가 있음.
 // /login 요청해서 username, password 를 post로 전송하면 UsernamePasswordAuthenticationFilter 가 동작한다.
@@ -60,8 +63,27 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     //JWT 토큰을 만들어서 request 요청한 사용자에게 jwt토큰을 response해주면 된다.
     @Override
     protected void successfulAuthentication(final HttpServletRequest request, final HttpServletResponse response, final FilterChain chain, final Authentication authResult) throws IOException, ServletException {
+
+        PrincipalDetails principal = (PrincipalDetails) authResult.getPrincipal();
+        /**
+         * 유저네임, 패스워드로 정상적으로 로그인을 한다면,
+         * JWT 토큰을 생성한다.
+         * 클라이언트 쪽으로 JWT 토큰을 응답해준다.
+         *
+         * 요청할 때마다 JWT 토큰을 가지고 클라는 서버에게 요청을 하고
+         * 서버는 JWT토큰이 유효한가를 판단해야하는데, 이 판단을 해줄 filter가 필요하다.
+         */
+
+        // Hash 암호 방식
+        String jwtToken = JWT.create()
+                .withSubject("joshuaToken")
+                .withExpiresAt(new Date(System.currentTimeMillis() + (60000 * 10))) // 10분
+                .withClaim("id", principal.getMember().getId())
+                .withClaim("username", principal.getMember().getUsername())
+                .sign(Algorithm.HMAC512("joshua"));
+
         System.out.println("successfulAuthentication 실행됨 : 인증이 완료됨을 의미함");
-        super.successfulAuthentication(request, response, chain, authResult);
+        response.addHeader("Authorization", "Bearer " + jwtToken);
     }
 
 }
