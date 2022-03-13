@@ -20,7 +20,7 @@ public class MyFilter3 implements Filter {
             String headerAuth = req.getHeader("Authorization");
             System.out.println(headerAuth);
             System.out.println("filter3");
-            if (headerAuth.equals("cos")) {
+            if (headerAuth.equals("joshua")) {
                 chain.doFilter(req, res);
             } else {
                 PrintWriter out = res.getWriter();

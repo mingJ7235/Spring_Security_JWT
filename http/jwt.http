@@ -1,5 +1,17 @@
+### login
 POST {{host}}/login
 Content-Type: application/json; charset=utf-8
+Authorization: joshua
+
+{
+  "username": "user",
+  "password": "123ㅇㄹㅇ4"
+}
+
+### 회원가입
+POST {{host}}/join
+Content-Type: application/json; charset=utf-8
+Authorization: joshua
 
 {
   "username": "user",
