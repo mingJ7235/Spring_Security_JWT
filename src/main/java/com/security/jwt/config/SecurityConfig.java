@@ -32,6 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(corsFilter) //@CrossOrigin 과 다르다.
                 .formLogin().disable() //form tag 사용한 로그인을 사용하지 않겠다는 말임
                 .httpBasic().disable()
+                .addFilter(new JwtAuthenticationFilter(authenticationManager())) //AuthenticationManager를 넣어줘야한다.
                 .authorizeRequests()
                 .antMatchers("/api/v1/user/**")
                 .access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")

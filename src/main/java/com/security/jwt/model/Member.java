@@ -16,7 +16,7 @@ public class Member {
     @Id
     @GeneratedValue
     private Long id;
-    private String name;
+    private String username;
     private String password;
     private String roles; // USER, ADMIN
 
