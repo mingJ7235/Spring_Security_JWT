@@ -1,4 +1,4 @@
-package com.security.jwt.config;
+package com.security.jwt.config.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -55,7 +55,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return null;
     }
 

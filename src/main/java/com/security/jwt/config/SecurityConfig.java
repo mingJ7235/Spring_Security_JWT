@@ -1,13 +1,15 @@
 package com.security.jwt.config;
 
+import com.security.jwt.config.jwt.JwtAuthenticationFilter;
+import com.security.jwt.config.jwt.JwtAuthorizationFilter;
 import com.security.jwt.filter.MyFilter3;
+import com.security.jwt.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import org.springframework.web.filter.CorsFilter;
 
@@ -22,9 +24,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CorsFilter corsFilter;
 
+    private final MemberRepository memberRepository;
+
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
-        http.addFilterBefore(new MyFilter3(), SecurityContextPersistenceFilter.class); //security filter가 시작하기 전에 ! 걸러줄 filter
+//        http.addFilterBefore(new MyFilter3(), SecurityContextPersistenceFilter.class); //security filter가 시작하기 전에 ! 걸러줄 filter
         http
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // session을 사용하지 않겠다 ! 왜? JWT를 사용할거니까
@@ -33,6 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().disable() //form tag 사용한 로그인을 사용하지 않겠다는 말임
                 .httpBasic().disable()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager())) //AuthenticationManager를 넣어줘야한다.
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), memberRepository)) //AuthenticationManager를 넣어줘야한다.
                 .authorizeRequests()
                 .antMatchers("/api/v1/user/**")
                 .access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")

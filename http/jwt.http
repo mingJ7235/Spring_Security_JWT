@@ -1,7 +1,6 @@
 ### login
 POST {{host}}/login
 Content-Type: application/json; charset=utf-8
-Authorization: joshua
 
 {
   "username": "user",
@@ -17,3 +16,8 @@ Authorization: joshua
   "username": "user",
   "password": "1234"
 }
+
+### 요청
+POST {{host}}/api/v1/user
+Content-Type: application/json; charset=utf-8
+Authorization: hello
